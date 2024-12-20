@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model author {
+  author_id      String   @id @map("author_id") @db.Text
+  uniqueids      String?  @db.Text
+  nicknames      String?  @db.Text
+  followercount  Int?
+  heartcount     Int?
+  videocount     Int?
+  signature      String?  @db.Text
+  privateaccount  Boolean?
+  following      Following[]
+  videos         Video[]
+}
+
+model following {
+  id             String   @id @default(cuid())
+  author_id      String   @map("author_id") @db.Text
+  in_folder_item String?  @db.Text
+  disappeared_item String? @db.Text
+  uniqueids      String?  @db.Text
+  author         Author   @relation(fields: [author_id], references: [author_id])
+}
+
+model video {
+  videoid        String   @id @map("videoid") @db.Text
+  author_id      String   @map("author_id") @db.Text
+  createtime     Int?
+  diggcount      Int?
+  playcount      Int?
+  audioid        String?  @db.Text
+  size           String?  @db.Text
+  author         Author   @relation(fields: [author_id], references: [author_id])
+  descriptions   VideoDescription[]
+}
+
+model videos_description {
+  videoid        String   @id @map("videoid") @db.Text
+  author_id      String?  @db.Text
+  createtime     Int?
+  diggcount      Int?
+  playcount      Int?
+  audioid        String?  @db.Text
+  size           String?  @db.Text
+  itemmute       String?  @db.Text
+  description    String?  @db.Text
+  video          Video    @relation(fields: [videoid], references: [videoid])
+}
+
